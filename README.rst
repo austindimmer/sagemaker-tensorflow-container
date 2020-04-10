@@ -56,6 +56,10 @@ The Docker images are built from the Dockerfiles specified in
 The Docker files are grouped based on TensorFlow version and separated
 based on Python version and processor type.
 
+The Docker files for TensorFlow 2.0 are available in the
+`tf-2 <https://github.com/aws/sagemaker-tensorflow-container/tree/tf-2>`__ branch, in
+`docker/2.0.0/ <https://github.com/aws/sagemaker-tensorflow-container/tree/tf-2/docker/2.0.0>`__.
+
 The Docker images, used to run training & inference jobs, are built from
 both corresponding "base" and "final" Dockerfiles.
 
@@ -109,17 +113,6 @@ Before building "final" images:
 
 Build your "base" image. Make sure it is named and tagged in accordance with your "final"
 Dockerfile. Skip this step if you want to build image of Tensorflow Version 1.9.0 and above.
-
-Then prepare the SageMaker TensorFlow Container python package in the image folder like below:
-
-::
-
-    # Create the SageMaker TensorFlow Container Python package.
-    cd sagemaker-tensorflow-containers
-    python setup.py sdist
-
-    #. Copy your Python package to "final" Dockerfile directory that you are building.
-    cp dist/sagemaker_tensorflow_container-<package_version>.tar.gz docker/<tensorflow_version>/final/py2
 
 If you want to build "final" Docker images, for versions 1.6 and above, you will first need to download the appropriate tensorflow pip wheel, then pass in its location as a build argument. These can be obtained from pypi. For example, the files for 1.6.0 are here:
 
@@ -203,7 +196,7 @@ Running integration tests require `Docker <https://www.docker.com/>`__ and `AWS
 credentials <https://docs.aws.amazon.com/sdk-for-java/v1/developer-guide/setup-credentials.html>`__,
 as the integration tests make calls to a couple AWS services. The integration and functional
 tests require configurations specified within their respective
-`conftest.py <https://github.com/aws/sagemaker-tensorflow-containers/blob/master/test/integ/conftest.py>`__.
+`conftest.py <https://github.com/aws/sagemaker-tensorflow-containers/blob/master/test/integration/conftest.py>`__.Make sure to update the account-id and region at a minimum.
 
 Integration tests on GPU require `Nvidia-Docker <https://github.com/NVIDIA/nvidia-docker>`__.
 
@@ -218,18 +211,18 @@ If you want to run local integration tests, then use:
 
     # Required arguments for integration tests are found in test/integ/conftest.py
 
-    pytest test/integ --docker-base-name <your_docker_image> \
-                      --tag <your_docker_image_tag> \
-                      --framework-version <tensorflow_version> \
-                      --processor <cpu_or_gpu>
+    pytest test/integration --docker-base-name <your_docker_image> \
+                            --tag <your_docker_image_tag> \
+                            --framework-version <tensorflow_version> \
+                            --processor <cpu_or_gpu>
 
 ::
 
     # Example
-    pytest test/integ --docker-base-name preprod-tensorflow \
-                      --tag 1.0 \
-                      --framework-version 1.4.1 \
-                      --processor cpu
+    pytest test/integration --docker-base-name preprod-tensorflow \
+                            --tag 1.0 \
+                            --framework-version 1.4.1 \
+                            --processor cpu
 
 Functional Tests
 ~~~~~~~~~~~~~~~~
